@@ -1,0 +1,68 @@
+<!doctype html>
+<html ng-app="ui.bootstrap.demo">
+  <head>
+  	<meta charset="utf-8">
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.4.0.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+
+<style type="text/css">
+  form.tab-form-demo .tab-pane {
+    margin: 20px 20px;
+  }
+</style>
+
+<div ng-controller="TabsDemoCtrl">
+  Tabs using nested forms:
+  <form name="outerForm" class="tab-form-demo">
+    <uib-tabset active="activeForm">
+      <uib-tab index="$index" heading="{{tab.title}}" ng-repeat="tab in tabs">
+        <ng-form name="nestedForm">
+          <div class="form-group">
+            <label>Name {{tab.content}}</label>
+            <input type="text" class="form-control" required ng-model="model.name"/>
+          </div>
+        </ng-form>
+      </uib-tab>
+      
+    </uib-tabset>
+  </form>
+  Model:
+  <pre>{{ model | json }}</pre>
+  Nested Form:{{customer.lastDay | date}}
+  <pre>{{ outerForm.nestedForm | json }}</pre>
+</div>
+  </body>
+ <script type="text/javascript">
+ angular.module('ui.bootstrap.demo', ['ngAnimate', 'ngSanitize', 'ui.bootstrap']);
+ angular.module('ui.bootstrap.demo').controller('TabsDemoCtrl', function ($scope, $window) {
+	$scope.customer = {};
+	$scope.customer.firstDay = new Date();
+	var today = $scope.customer.firstDay;
+	$scope.customer.lastDay = new Date(today.getTime() + 40*24*60*60*1000)
+	console.log($scope.customer);
+	for (var i=0; i < 30; i++) {
+		
+	}
+	
+   $scope.tabs = [
+     { title:'Dynamic Title 1', content:'Dynamic content 1' },
+     { title:'Dynamic Title 2', content:'Dynamic content 2', disabled: true }
+   ];
+
+   $scope.alertMe = function() {
+     setTimeout(function() {
+       $window.alert('You\'ve selected the alert tab!');
+     });
+   };
+
+   $scope.model = {
+     name: 'Tabs'
+   };
+ });
+ </script>
+</html>

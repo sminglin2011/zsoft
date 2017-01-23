@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="lib/jquery/jquery.js"></script>
+<script type="text/javascript" src="lib/datatable/jquery.dataTables.js"></script>
+<script type="text/javascript" src="lib/angular/angular.js"></script>
+<title>Insert title here</title>
+</head>
+<body>
+<div ng-app="app">
+    <div ng-controller="Ctrl">   
+    
+        <table 
+        	my-table="overrideOptions"
+        	aa-data="sampleData"
+        	ao-columns="columns"
+        	ao-column-defs="columnDefs"
+        	fn-row-callback="myCallback"
+            >
+           
+        </table>
+
+       {{message}}
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+(function(){
+	var app = angular.module("app",[]);
+	app.controller("Ctrl", function($scope, $http) {
+		Ctrl($scope, $http);
+	})
+	function Ctrl($scope, $http){
+		$scope.options = {};
+		$scope.overrideOptions = {
+			    ordering:  false
+		};
+		$scope.sampleData = [{
+	        "categoryId": "1948 Porsche 356-A Roadster",
+	        "categoryName": 53.9,
+	          "online": "Classic Cars",
+	          "sequence":"x",
+	          "action":"x"
+	      }];
+		//$http.get("http://localhost:8090/zsoft/fetchMenuCategory.ewsvc")
+		//	.then(function (response) {console.log(response.data);$scope.sampleData=response.data });
+		$scope.columns = [ {"title":"categoryId"},{"title":"categoryName"},{"title":"online"},{"title":"sequence"}
+							, {"title":"action"}]; 
+		$scope.columnDefs = [ 
+		                     { "mDataProp": "categoryId", "aTargets": [0]},
+		                     { "mDataProp": "categoryName", "aTargets":[1] },
+		                     { "mDataProp": "online", "aTargets":[2] },
+		                     { "mDataProp": "sequence", "aTargets":[3]
+		                     	, "render": function( data, type, row ) {
+			                         return "dddd";
+			                     	}
+		                     },
+		                     { "mDataProp": "action", "aTargets":[4], visible: true
+		                    	, "render": function( data, type, row ) {
+		                    		console.log($(row))
+			                         return "<a>ffffff</a>"+(JSON.stringify(row))
+			                     	}
+		                     }
+		                 ]; 
+		$scope.myCallback = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {            
+	        $('td:eq(2)', nRow).bind('click', function() {
+	            $scope.$apply(function() {
+	                $scope.someClickHandler(aData);
+	            });
+	        });
+	        $('td:eq(4)', nRow).find("a").bind('click', function() {
+	            $scope.$apply(function() {
+	                $scope.someClickHandler(aData);
+	            });
+	        });
+	        return nRow;
+	    };
+	    $scope.someClickHandler = function(info) {
+	        $scope.message = 'clicked: '+ info.online;
+	    };
+	}
+	app.directive("myTable", function() {
+		return function(scope, element, attrs) {
+	        // apply DataTable options, use defaults if none specified by user
+	        var options = {};
+	        if (attrs.myTable.length > 0) {
+	            options = scope.$eval(attrs.myTable);
+	        } else {
+	            options = {
+	                "bStateSave": true,
+	                "iCookieDuration": 2419200, /* 1 month */
+	                "bJQueryUI": true,
+	                "bPaginate": false,
+	                "bLengthChange": false,
+	                "bFilter": false,
+	                "bInfo": false,
+	                "bDestroy": true
+	            };
+	        }
+	        //console.log(options,"options");
+	        var explicitColumns = [];
+	        element.find('th').each(function(index, elem) {
+	            explicitColumns.push({"title":$(elem).text()});
+	        });
+	        
+	        console.log(explicitColumns,"explicitColumns");
+	        if (explicitColumns.length > 0) {
+	            options["aoColumns"] = explicitColumns;
+	        } else if (attrs.aoColumns) {
+	            options["aoColumns"] = scope.$eval(attrs.aoColumns);
+	        }
+	        
+	        if (attrs.aoColumnDefs) {
+	            options["aoColumnDefs"] = scope.$eval(attrs.aoColumnDefs);
+	        }
+	        
+	        if (attrs.fnRowCallback) {
+	            options["fnRowCallback"] = scope.$eval(attrs.fnRowCallback);
+	        }
+	       
+	        // apply the plugin
+	        var dataTable = element.dataTable(options);
+	        console.log(scope.$eval(attrs.aaData),"aa");
+	        
+	        scope.$watch(attrs.aaData, function(value) {
+	        	console.log(attrs.aaData,"attrs.aaData");
+	            var val = value || null;
+	            if (val) {
+	                dataTable.fnClearTable();
+	                dataTable.fnAddData(scope.$eval(attrs.aaData));
+	            }
+	        }); 
+	    };
+	});
+})()
+
+
+</script>
+</html>
