@@ -33,7 +33,7 @@
         </div>
         <label class="form-label col-xs-2"><span class="c-red">*</span>First Event Date：</label>
         <div class="formControls col-xs-2">
-            <input type="text" class="input-text date" ng-model="ap.date" wdate-picker
+            <input type="text" class="input-text date" ng-model="so.date" wdate-picker ng-change="changeDate()"
              datatype="*">
         </div>
     </div>
@@ -57,7 +57,24 @@
 	<div id="tab_demo" class="HuiTab">
       <div class="tabBar clearfix"><span ng-repeat="tab in tabs">{{tab.title}}</span>
       </div>
-      <div class="tabCon" ng-repeat="tab in tabs">{{tab.content}}</div>
+      <div class="tabCon" ng-repeat="tab in tabs">
+          <div class="panel panel-warning">
+            <div class="panel-header">Delivery 1</div>
+            <div class="panel-body">面板内容{{tab.content}}</div>
+          </div>
+          <div class="panel panel-primary">
+            <div class="panel-header">Delivery 2</div>
+            <div class="panel-body">面板内容</div>
+          </div>
+          <div class="panel panel-secondary">
+            <div class="panel-header">Delivery 3</div>
+            <div class="panel-body">面板内容</div>
+          </div>
+          <div class="panel panel-success">
+            <div class="panel-header">Delivery 4</div>
+            <div class="panel-body">面板内容</div>
+          </div>
+      </div>
     </div>
   
 	</div>
@@ -73,13 +90,11 @@
 <script type="text/javascript" src="lib/angular.js"></script>
 <script type="text/javascript" src="lib/My97DatePicker/ng-WdatePicker.js"></script>
 <script type="text/javascript" src="lib/select2-4.0.3/dist/js/select2.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
-    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.4.0.js"></script>
 
 <script type="text/javascript">
 $(function(){
     $.Huitab("#tab_demo .tabBar span","#tab_demo .tabCon","current","click","0");
+    $.Huifold(".menu_panel dl dt",".menu_dropdown dl dd","fast",1,"click");
 });
 (function(){
     
@@ -87,22 +102,30 @@ $(function(){
     angular.module('zsoft').controller('zsoftCtrl', function ($scope, $window) {
 	$scope.customer = {};
 	$scope.customer.firstDay = new Date();
+    
 	var firstDay = $scope.customer.firstDay;
+    $scope.so = {};
+    $scope.so.date = new Date();
 	$scope.customer.lastDay = new Date(firstDay.getTime() + 40*24*60*60*1000)
 	console.log($scope.customer);
 	$scope.tabs = [];
-	for (var i=0; i <7; i++) {
+	for (var i=0; i <10; i++) {
 		firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
 		$scope.tabs.push(
 				{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
 		);
 	}
-	
-
+	$scope.changeDate = function(){
+        $scope.$watch($scope.so.date, function(newValue, oldValue) {
+        
+        console.log("=value", oldValue, newValue)
+        }); 
+    }
+    
    $scope.alertMe = function() {
 	   firstDay = new Date(firstDay.getTime()+24*60*60*1000);
 	   $scope.tabs=[];
-	   for (var i=0; i <7; i++) {
+	   for (var i=0; i <10; i++) {
 		   firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
 			$scope.tabs.push(
 					{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
