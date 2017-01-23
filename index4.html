@@ -17,7 +17,7 @@
 </style>
 
 <div ng-controller="TabsDemoCtrl">
-  Tabs using nested forms:
+  Tabs using nested forms:<button ng-click="alertMe()">next</button>
   <form name="outerForm" class="tab-form-demo">
     <uib-tabset active="activeForm">
       <uib-tab index="$index" heading="{{tab.title}}" ng-repeat="tab in tabs">
@@ -25,6 +25,28 @@
           <div class="form-group">
             <label>Name {{tab.content}}</label>
             <input type="text" class="form-control" required ng-model="model.name"/>
+            <uib-accordion close-others="oneAtATime">
+			    <div uib-accordion-group class="panel-default" heading="Delivery 1">
+			      <p>The body of the uib-accordion group grows to fit the contents</p>
+			      <button type="button" class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
+			      <div ng-repeat="item in items">{{item}}</div>
+			    </div>
+			    <div uib-accordion-group class="panel-default" heading="Delivery 2">
+			      <p>The body of the uib-accordion group grows to fit the contents</p>
+			      <button type="button" class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
+			      <div ng-repeat="item in items">{{item}}</div>
+			    </div>
+			    <div uib-accordion-group class="panel-default" heading="Delivery 3">
+			      <p>The body of the uib-accordion group grows to fit the contents</p>
+			      <button type="button" class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
+			      <div ng-repeat="item in items">{{item}}</div>
+			    </div>
+			    <div uib-accordion-group class="panel-default" heading="Delivery 4">
+			      <p>The body of the uib-accordion group grows to fit the contents</p>
+			      <button type="button" class="btn btn-default btn-sm" ng-click="addItem()">Add Item</button>
+			      <div ng-repeat="item in items">{{item}}</div>
+			    </div>
+			  </uib-accordion>
           </div>
         </ng-form>
       </uib-tab>
@@ -42,22 +64,30 @@
  angular.module('ui.bootstrap.demo').controller('TabsDemoCtrl', function ($scope, $window) {
 	$scope.customer = {};
 	$scope.customer.firstDay = new Date();
-	var today = $scope.customer.firstDay;
-	$scope.customer.lastDay = new Date(today.getTime() + 40*24*60*60*1000)
+	var firstDay = $scope.customer.firstDay;
+	$scope.customer.lastDay = new Date(firstDay.getTime() + 40*24*60*60*1000)
 	console.log($scope.customer);
-	for (var i=0; i < 30; i++) {
-		
+	$scope.tabs = [];
+	for (var i=0; i <25; i++) {
+		firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
+		$scope.tabs.push(
+				{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
+		);
 	}
 	
-   $scope.tabs = [
-     { title:'Dynamic Title 1', content:'Dynamic content 1' },
-     { title:'Dynamic Title 2', content:'Dynamic content 2', disabled: true }
-   ];
 
    $scope.alertMe = function() {
-     setTimeout(function() {
-       $window.alert('You\'ve selected the alert tab!');
-     });
+	   firstDay = new Date(firstDay.getTime()+24*60*60*1000);
+	   $scope.tabs=[];
+	   for (var i=0; i <25; i++) {
+		   firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
+			$scope.tabs.push(
+					{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
+			);
+		}
+     //setTimeout(function() {
+     //  $window.alert('You\'ve selected the alert tab!');
+    // });
    };
 
    $scope.model = {
