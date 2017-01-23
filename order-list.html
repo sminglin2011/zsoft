@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>资讯列表</title>
+</head>
+<div ng-app="zsoft">
+<div ng-controller="zsoftCtrl">
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> Home <span class="c-gray en">&gt;</span> Order Confirmation  <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="Reload" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container" ng-controller="zsoftCtrl">
+	<div class="text-c"> 日期范围：
+		<input type="text" onfocus="WdatePicker({maxDate:'#F{$dp.$D(\'datemax\')||\'%y-%M-%d\'}'})" id="datemin" class="input-text Wdate" style="width:120px;">
+		-
+		<input type="text" onfocus="WdatePicker({minDate:'#F{$dp.$D(\'datemin\')}',maxDate:'%y-%M-%d'})" id="datemax" class="input-text Wdate" style="width:120px;">
+		<input type="text" class="input-text" style="width:250px" placeholder="" id="" name="">
+		<button type="submit" class="btn btn-success radius" id="" name=""><i class="Hui-iconfont">&#xe665;</i> Search </button>
+	</div>
+	<div class="cl pd-5 bg-1 bk-gray mt-20"> 
+        <span class="l">
+        <!--<a href="javascript:;" onclick="datadel()" class="btn btn-danger radius"><i class="Hui-iconfont">&#xe6e2;</i> 批量删除</a> -->
+        <a _href="order-confirmation.html" data-title=" New Order Confirmation" onclick="Hui_admin_tab(this)" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i> New Order</a>
+        </span>
+        <span class="r"></span> </div>
+	<div class="mt-20">
+	<table class="table table-border table-bordered table-hover table-bg table-sort"
+            my-table="overrideOptions"
+        	aa-data="sampleData"
+        	ao-columns="columns"
+        	ao-column-defs="columnDefs"
+        	fn-row-callback="myCallback"
+            >
+            
+        </table>
+	</div>
+</div>
+</div>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script> 
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script> 
+<script type="text/javascript" src="lib/datatables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="lib/angular.js"></script>
+
+<script type="text/javascript">
+(function(){
+	var app = angular.module("zsoft",[]);
+	app.controller("zsoftCtrl", function($scope, $http) {
+		Ctrl($scope, $http);
+	})
+	function Ctrl($scope, $http){
+		$scope.options = {};
+		$scope.overrideOptions = {
+			    ordering:  false
+		};
+		$scope.sampleData = [{
+	        "categoryId": "1948 Porsche 356-A Roadster",
+	        "categoryName": 53.9,
+	          "online": "Classic Cars",
+	          "sequence":"x"
+	      }];
+		$http.get("http://ews-web.servebbs.com:8090/zsoft/fetchMenuCategory.ewsvc")
+			.then(function (response) {console.log(response.data);$scope.sampleData=response.data });
+		$scope.columns = [ {"title":"categoryId"},{"title":"categoryName"},{"title":"online"},{"title":"sequence"}
+							]; 
+		$scope.columnDefs = [ 
+		                     { "mDataProp": "categoryId", "aTargets": [0]},
+		                     { "mDataProp": "categoryName", "aTargets":[1] },
+		                     { "mDataProp": "online", "aTargets":[2] },
+		                     { "mDataProp": "sequence", "aTargets":[3], visible: true
+		                     	, "render": function( data, type, row ) {
+			                         return "dddd";
+			                     	}
+		                     }
+		                 ]; 
+		$scope.myCallback = function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {            
+	        $('td:eq(2)', nRow).bind('click', function() {
+	            $scope.$apply(function() {
+	                $scope.someClickHandler(aData);
+	            });
+	        });
+	        $('td:eq(4)', nRow).find("a").bind('click', function() {
+	            $scope.$apply(function() {
+	                $scope.someClickHandler(aData);
+	            });
+	        });
+	        return nRow;
+	    };
+	    $scope.someClickHandler = function(info) {
+	        $scope.message = 'clicked: '+ info.online;
+	    };
+	}
+	app.directive("myTable", function() {
+		return function(scope, element, attrs) {
+	        // apply DataTable options, use defaults if none specified by user
+	        var options = {};
+	        if (attrs.myTable.length > 0) {
+	            options = scope.$eval(attrs.myTable);
+	        } else {
+	            options = {
+	                "bStateSave": true,
+	                "iCookieDuration": 2419200, /* 1 month */
+	                "bJQueryUI": true,
+	                "bPaginate": false,
+	                "bLengthChange": false,
+	                "bFilter": false,
+	                "bInfo": false,
+	                "bDestroy": true
+	            };
+	        }
+	        //console.log(options,"options");
+	        var explicitColumns = [];
+	        element.find('th').each(function(index, elem) {
+	            explicitColumns.push({"title":$(elem).text()});
+	        });
+	        
+	        console.log(explicitColumns,"explicitColumns");
+	        if (explicitColumns.length > 0) {
+	            options["aoColumns"] = explicitColumns;
+	        } else if (attrs.aoColumns) {
+	            options["aoColumns"] = scope.$eval(attrs.aoColumns);
+	        }
+	        
+	        if (attrs.aoColumnDefs) {
+	            options["aoColumnDefs"] = scope.$eval(attrs.aoColumnDefs);
+	        }
+	        
+	        if (attrs.fnRowCallback) {
+	            options["fnRowCallback"] = scope.$eval(attrs.fnRowCallback);
+	        }
+	       
+	        // apply the plugin
+	        var dataTable = element.dataTable(options);
+	        console.log(scope.$eval(attrs.aaData),"aa");
+	        
+	        scope.$watch(attrs.aaData, function(value) {
+	        	console.log(attrs.aaData,"attrs.aaData");
+	            var val = value || null;
+	            if (val) {
+	                dataTable.fnClearTable();
+	                dataTable.fnAddData(scope.$eval(attrs.aaData));
+	            }
+	        }); 
+	    };
+	});
+})()
+</script> 

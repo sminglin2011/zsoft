@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html ng-app="zsoft">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="static/h-ui/css/H-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/H-ui.admin.css" />
+<link rel="stylesheet" type="text/css" href="lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/skin/default/skin.css" id="skin" />
+<link rel="stylesheet" type="text/css" href="static/h-ui.admin/css/style.css" />
+<!--[if IE 6]>
+<script type="text/javascript" src="http://lib.h-ui.net/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title></title>
+</head>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> Home <span class="c-gray en">&gt;</span> New Order Confirmation  <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="Reload" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container" ng-controller="zsoftCtrl">
+    <form action="" method="post" class="form form-horizontal responsive" id="form-orderConfirmation">
+    <div class="row cl">
+        <label class="form-label col-xs-2">Order Number：</label>
+        <div class="formControls col-xs-2">
+            <input type="text" class="input-text disabled" ng-model="so.soNumber" >
+        </div>
+        <label class="form-label col-xs-2"><span class="c-red">*</span>First Event Date：</label>
+        <div class="formControls col-xs-2">
+            <input type="text" class="input-text date" ng-model="ap.date" wdate-picker
+             datatype="*">
+        </div>
+    </div>
+	<div class="row cl">
+        <label class="form-label col-xs-2">Customer Name：</label>
+        <div class="formControls col-xs-2">
+            <input type="text" class="input-text" ng-model="so.custName" >
+        </div>
+        <label class="form-label col-xs-2"><span class="c-red">*</span>Postal Code：</label>
+        <div class="formControls col-xs-2">
+            <input type="text" class="input-text date" ng-model="so.postal" 
+             datatype="*">
+        </div>
+        <label class="form-label col-xs-2"><span class="c-red">*</span>Address：</label>
+        <div class="formControls col-xs-2">
+            <input type="text" class="input-text date" ng-model="so.postal" 
+             datatype="*">
+        </div>
+    </div>
+	<div class="mt-20">
+	<div id="tab_demo" class="HuiTab">
+      <div class="tabBar clearfix"><span ng-repeat="tab in tabs">{{tab.title}}</span>
+      </div>
+      <div class="tabCon" ng-repeat="tab in tabs">{{tab.content}}</div>
+    </div>
+  
+	</div>
+    </form>
+</div>
+<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="lib/layer/2.1/layer.js"></script>
+<script type="text/javascript" src="lib/laypage/1.2/laypage.js"></script> 
+<script type="text/javascript" src="lib/My97DatePicker/WdatePicker.js"></script> 
+<script type="text/javascript" src="lib/datatables/jquery.dataTables.js"></script>
+<script type="text/javascript" src="static/h-ui/js/H-ui.js"></script> 
+<script type="text/javascript" src="static/h-ui.admin/js/H-ui.admin.js"></script>
+<script type="text/javascript" src="lib/angular.js"></script>
+<script type="text/javascript" src="lib/My97DatePicker/ng-WdatePicker.js"></script>
+<script type="text/javascript" src="lib/select2-4.0.3/dist/js/select2.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.4.0.js"></script>
+
+<script type="text/javascript">
+$(function(){
+    $.Huitab("#tab_demo .tabBar span","#tab_demo .tabCon","current","click","0");
+});
+(function(){
+    
+	angular.module('zsoft', ["ng-WdatePicker"]);
+    angular.module('zsoft').controller('zsoftCtrl', function ($scope, $window) {
+	$scope.customer = {};
+	$scope.customer.firstDay = new Date();
+	var firstDay = $scope.customer.firstDay;
+	$scope.customer.lastDay = new Date(firstDay.getTime() + 40*24*60*60*1000)
+	console.log($scope.customer);
+	$scope.tabs = [];
+	for (var i=0; i <7; i++) {
+		firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
+		$scope.tabs.push(
+				{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
+		);
+	}
+	
+
+   $scope.alertMe = function() {
+	   firstDay = new Date(firstDay.getTime()+24*60*60*1000);
+	   $scope.tabs=[];
+	   for (var i=0; i <7; i++) {
+		   firstDay = new Date(firstDay.getTime() + 24*60*60*1000);
+			$scope.tabs.push(
+					{title:firstDay.getDate()+"/"+(firstDay.getMonth()+1), content:firstDay}
+			);
+		}
+     //setTimeout(function() {
+     //  $window.alert('You\'ve selected the alert tab!');
+    // });
+   };
+
+   $scope.model = {
+     name: 'Tabs'
+   };
+ });
+})(jQuery)
+</script> 
