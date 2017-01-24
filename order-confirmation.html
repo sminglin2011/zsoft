@@ -62,10 +62,9 @@
     </div>
 	<div class="mt-20">
 	<div id="tab_demo" class="HuiTab">
-      <div class="tabBar clearfix"><span ng-repeat="tab in tabs track by $index">{{tab.title}}</span>
-      </div>
+      <div class="tabBar clearfix"><span ng-repeat="tab in tabs track by $index">{{tab.title}}</span></div>
       <div class="tabCon" ng-repeat="tab in tabs track by tab.title">
-          <ul id="Huifold" class="Huifold">
+          <ul id="Huifold{{$index}}" class="Huifold">
 			  <li class="item" ng-repeat="so in tab.deliverySo track by so.noDel">
 			    <h4>Delivery {{$index+1}}<b>+</b></h4>
 			    <div class="info">
@@ -116,8 +115,7 @@
 		  </ul>
       </div>
     </div>
-  
-	</div>
+  </div>
     </form>
 </div>
 <script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script> 
@@ -133,10 +131,17 @@
 <link rel="stylesheet" type="text/css" href="lib/select2-4.0.3/dist/css/select2.css" />
 
 <script type="text/javascript">
+function initPanel() {
+        for(var i=0; i<30; i++) {
+            $.Huifold("#Huifold"+i+" .item h4","#Huifold"+i+" .item .info","fast",2,"click"); 
+        }
+    }
 $(function(){
 	$(".select").select2();
     $.Huitab("#tab_demo .tabBar span","#tab_demo .tabCon","current","click","0");
-    $.Huifold("#Huifold .item h4","#Huifold .item .info","fast",2,"click"); /*5个参数顺序不可打乱，分别是：相应区,隐藏显示的内容,速度,类型,事件*/
+    //$.Huifold("#Huifold0 .item h4","#Huifold0 .item .info","fast",2,"click"); /*5个参数顺序不可打乱，分别是：相应区,隐藏显示的内容,速度,类型,事件*/
+    
+    initPanel();
 });
 (function(){
 	angular.module('zsoft', ["ng-WdatePicker"]);
@@ -177,7 +182,6 @@ $(function(){
 		);
 		currentDay = new Date(currentDay.getTime() + 24*60*60*1000);
 	}
-	
 	$scope.changeDate = function(){
 		$scope.tabs = [];
 		currentDay = new Date($scope.startDate);
@@ -196,8 +200,7 @@ $(function(){
 			);
 			currentDay = new Date(currentDay.getTime() + 24*60*60*1000);
 		}
-		$.Huifold("#Huifold .item h4","#Huifold .item .info","fast",2,"click"); 
-		$.Huitab("#tab_demo .tabBar span","#tab_demo .tabCon","current","click","0");
+        initPanel();
     }
 	$scope.toggleSelection = function($event, itemGroup, item, selectedItems) {
 		var checkbox = $event.target;
