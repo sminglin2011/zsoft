@@ -70,6 +70,16 @@
 			    <div class="info">
 			    <!-- Delivery -->
 			    <div class="row cl">
+			    	<label class="form-label col-xs-2">No. Pax：</label>
+			    	<div class="formControls col-xs-2">
+			            <input class="input-text" type="text" ng-model="so.noPax">
+			        </div>
+			        <label class="form-label col-xs-2">Price Per Pax：</label>
+			    	<div class="formControls col-xs-2">
+			            <input class="input-text" type="text" ng-model="so.unitPrice">
+			        </div>
+			    </div>
+			    <div class="row cl">
 			        <label class="form-label col-xs-2">Menu Category：</label>
 			        <div class="formControls col-xs-4">
 			            <span class="select-box">
@@ -87,27 +97,49 @@
 			            </span>
 			        </div>
 			    </div>
-			    <div class="row cl" ng-show="so.menu">
+			    <div class="row cl" ng-if="so.menu">
 			    	<div class="formControls col-xs-4" ng-repeat="itemGroup in menuItemGroupList | filter:{menuId: so.menu} track by itemGroup.id">
 			    		<ul> <strong ng-model="itemGroup.sequence">{{itemGroup.groupName}}</strong><br>
 			    			<div class="check-box" ng-show="so.menu"
 			    				ng-repeat="item in menuItemList | filter:{menuId: so.menu, sequence:itemGroup.sequence} track by item.id">
 								<label>
-								<input type="checkbox" ng-checked="so.selectedItems.indexOf(item) > 1" 
+								<input type="checkbox" ng-checked="ngCheckItem(item, so.selectedItems)" 
 									ng-click="toggleSelection($event, itemGroup, item, so.selectedItems)"
 								  >
 								{{item.menuItemName}}</label>
 							</div>
 			    		</ul>
 			    	</div>
-			    	<!-- 
-			    	<div class="formControls col-xs-3" ng-repeat="item in menuItemList | filter:{menuId: so.menu} track by item.id">
-							<div class="check-box">
-								<input type="checkbox" id="checkbox-5" ng-model='so.selectedItems[$index]'
-									ng-true-value="{{item}}">
-								<label for="checkbox-5">{{item.menuItemName}}</label>
+			    </div>
+			    <div class="row cl">
+			    	<div class="formControls col-xs-12">
+			           	<div class="panel panel-success">
+							<div class="panel-header">Selected Items</div>
+							<div class="panel-body">
+								<div ng-repeat="selectedItem in so.selectedItems track by selectedItem.id">
+			            		{{selectedItem.menuItemName}}<a href="javascript:;" class="ml-5" style="text-decoration:none"
+			            		ng-click="removeSelectedItem(selectedItem, so.selectedItems)"><i class="Hui-iconfont">&#xe6e2;</i></a>
+			            		</div>
 							</div>
-					</div> -->
+						</div>
+			        </div>
+			    </div>
+			    <div class="row cl">
+			    	<div class="formControls col-xs-12">
+			           	<div class="panel panel-danger">
+							<div class="panel-header">Additional Items</div>
+							<div class="panel-body">
+								<div class="check-box" ng-show="so.menu"
+				    				ng-repeat="addOnItem in menuItemList | filter:{menuId: so.menu, addOn:true} track by addOnItem.id">
+									<label>
+									<input type="checkbox" ng-model="so.selectedAddOnItems[$index]" ng-true-value="{{addOnItem}}" >
+									{{addOnItem.menuItemName}}</label><label> {{addOnItem.price | currency}}</label>
+									 Quantity <input type="text" class="input-text" style="width:40px" 
+									 	ng-model="so.selectedAddOnItems[$index].quantity"> {{addOnItem.prepareUnitMs}}
+								</div>
+							</div>
+						</div>
+			        </div>
 			    </div>
 			    <!-- Delivery -->
 			    </div>
@@ -172,6 +204,7 @@ $(function(){
 		for (var deliveryTime = 1; deliveryTime <=4; deliveryTime++){
 			$scope.so = {};
 			$scope.so.selectedItems = [];
+			$scope.so.selectedAddOnItems = [];
 			$scope.so.noDel = deliveryTime;
 			$scope.deliverySo.push($scope.so);
 		}
@@ -220,11 +253,33 @@ $(function(){
 				$event.target.checked = false;
 			}
 		} else {
-			selectedItems.splice(selectedItems.indexOf(item), 1); // remove item
+			//selectedItems.splice(selectedItems.indexOf(item), 1); // remove item
+			console.log("what is it = ", selectedItems);
+			selectedItems = $scope.removeSelectedItem(item, selectedItems);
 		}
 		console.log(selectedItems);
 	}
-	
+	$scope.ngCheckItem = function (item, selectedItems) {
+		var checked = false;
+		$.each(selectedItems, function(i){
+		    if(selectedItems[i].id === item.id) {
+		    	checked = true;
+		    	return false;
+		    }
+		});
+		return checked;
+	}
+	// remove item from selected List
+	$scope.removeSelectedItem = function(obj, selectedItems) {
+		selectedItems = $.each(selectedItems, function(i){
+		    if(selectedItems[i].id === obj.id) {
+		    	selectedItems.splice(i,1);
+		    	return false
+		    }
+		});
+		console.log("after removed", selectedItems);
+		return selectedItems;
+	}
 	$scope.checkData = function() {
 		console.log("check data tabs=", $scope.tabs);
 	}
