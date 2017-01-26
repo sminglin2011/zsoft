@@ -1,0 +1,205 @@
+/* CELLS */
+.newtab-cell {
+  display: -moz-box;
+  height: 210px;
+  margin: 20px 10px 35px;
+  width: 290px;
+  border-radius:8px;
+}
+/* SITES */
+.newtab-site {
+  position: relative;
+  -moz-box-flex: 1;
+  transition: 100ms ease-out;
+  transition-property: top, left, opacity;
+}
+
+.newtab-site[frozen] {
+  position: absolute;
+  pointer-events: none;
+}
+
+.newtab-site[dragged] {
+  transition-property: none;
+  z-index: 10;
+}
+/* LINK + THUMBNAILS */
+.newtab-link,
+.newtab-thumbnail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  border-radius:8px;
+  width: 100%; 
+  height: 100%;
+}
+/* TITLES */
+.newtab-sponsored,
+.newtab-title,
+.newtab-suggested {
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  text-align: center;
+}
+
+.newtab-sponsored,
+.newtab-title {
+  bottom: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  color: red;
+  line-height: 30px;
+  vertical-align: middle;
+  background-color: #F2F2F2;
+  background-color: rgba(0,0,0,0.2)
+}
+
+.newtab-suggested {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  height: 17px;
+  line-height: 17px;
+  margin-bottom: -1px;
+  padding: 2px 8px;
+  display: none;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  top: 215px;
+  -moz-user-select: none;
+}
+
+.newtab-suggested-bounds {
+  max-height: 34px; /* 34 / 17 = 2 lines maximum */
+}
+
+.newtab-title {
+  left: 0;
+  padding: 0 4px;
+  border: 1px solid #FFFFFF;
+  border-color:rgba(0,0,0, 0.1);
+  border-radius: 0px 0px 8px 8px;
+}
+
+.newtab-sponsored {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E2E2;
+  border-radius: 3px;
+  color: #4A4A4A;
+  cursor: pointer;
+  display: none;
+  font-family: Arial;
+  font-size: 9px;
+  height: 17px;
+  left: 0;
+  line-height: 6px;
+  padding: 4px;
+  right: auto;
+  top: -15px;
+}
+
+.newtab-site[suggested=true] > .newtab-sponsored {
+  background-color: #E2E2E2;
+  border: none;
+}
+
+.newtab-site > .newtab-sponsored:-moz-any(:hover, [active]) {
+  background-color: #4A90E2;
+  border: 0;
+  color: white;
+}
+
+.newtab-site > .newtab-sponsored[active] {
+  background-color: #000000;
+}
+
+.newtab-sponsored:dir(rtl) {
+  right: 0;
+  left: auto;
+}
+
+.newtab-site:-moz-any([type=enhanced], [type=sponsored], [suggested]) .newtab-sponsored {
+  display: block;
+}
+
+.newtab-site[suggested] .newtab-suggested {
+  display: table;
+}
+
+.sponsored-explain,
+.sponsored-explain a,
+.suggested-explain,
+.suggested-explain a {
+  color: white;
+}
+
+.sponsored-explain,
+.suggested-explain {
+  background-color: rgba(51, 51, 51, 0.95);
+  bottom: 30px;
+  line-height: 20px;
+  padding: 15px 10px;
+  position: absolute;
+  text-align: start;
+}
+
+.sponsored-explain input,
+.suggested-explain input {
+  background-size: 18px;
+  height: 18px;
+  opacity: 1;
+  pointer-events: none;
+  position: static;
+  width: 18px;
+}
+
+/* CONTROLS */
+.newtab-control {
+  position: absolute;
+  top: 4px;
+  opacity: 0;
+  transition: opacity 100ms ease-out;
+}
+
+.newtab-control:-moz-focusring,
+.newtab-cell:not([ignorehover]) > .newtab-site:hover > .newtab-control {
+  opacity: 1;
+}
+
+.newtab-control[dragged] {
+  opacity: 0 !important;
+}
+
+@media (-moz-touch-enabled) {
+  .newtab-control {
+    opacity: 1;
+  }
+}
+
+.newtab-control-pin:dir(ltr),
+.newtab-control-block:dir(rtl) {
+  left: 4px;
+}
+
+.newtab-control-block:dir(ltr),
+.newtab-control-pin:dir(rtl) {
+  right: 4px;
+}
+/* DRAG & DROP */
+
+/*
+ * This is just a temporary drag element used for dataTransfer.setDragImage()
+ * so that we can use custom drag images and elements. It needs an opacity of
+ * 0.01 so that the core code detects that it's in fact a visible element.
+ */
+.newtab-drag {
+  width: 1px;
+  height: 1px;
+  background-color: #fff;
+  opacity: 0.01;
+}
