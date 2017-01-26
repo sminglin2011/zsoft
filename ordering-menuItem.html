@@ -26,7 +26,20 @@
 <body>
 <nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> Home <span class="c-gray en">&gt;</span> Online Menu  <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="Reload" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
 <div class="page-container" ng-controller="myController">
-<div class="pd-20">
+<div class="pd-20"> 
+
+	<div class="formControls col-xs-4" ng-repeat="itemGroup in menuItemGroupList track by itemGroup.code">
+  		<ul> <strong>{{itemGroup.menuItemName}}</strong><br>
+  			<div class="check-box"
+  				ng-repeat="item in menuItemList | filter:{sequence: itemGroup.sequence} track by item.code">
+			<label>
+			<input type="checkbox" ng-checked="ngCheckItem(item)" 
+				ng-click="toggleSelection($event, itemGroup, item)">
+			{{item.menuItemName}}</label>
+		</div>
+  		</ul>
+  	</div>
+<!-- 
 	<div class="newtab-cell" ng-repeat="menu in menuList">
 		<div class="newtab-site" draggable="true">
 			<span class="newtab-sponsored"></span>
@@ -44,7 +57,7 @@
 			</a>
 		</div>
 	</div>
-	
+	 -->
 </div>
 </div>
 	<script type="text/javascript" src="lib/jquery/1.9.1/jquery.min.js"></script>
@@ -68,10 +81,75 @@ function exportPDF() {
 var app = angular.module("app",["ngRoute"]);
 app.controller("myController", function($scope, $http) {
 	$scope.menuGroupId = getParamFromUrl("menuGroupId");
-	console.log($scope.menuGroupId, "menuGroupId");
-	$scope.menuList = [];
-	$http.get("http://ews-web.servebbs.com:8090/zsoft/fetchMenuByGroupId.ewsvc?menuGroupId="+$scope.menuGroupId)
-		.then(function (response) {$scope.menuList=response.data });
+	$scope.menuId = getParamFromUrl("menuId");
+	$scope.menuItemList = [];
+	$scope.menuItemGroupList = [];
+	$scope.selectedItems = [];
+	$http.get("http://ews-web.servebbs.com:8090/zsoft/fetchMenuItemOnline.ewsvc?menuGroupId="+$scope.menuGroupId+"&menuId="+$scope.menuId)
+		.then(function (response) {
+			$scope.menuItemList=response.data;
+			$scope.menuItemGroupList = response.data.filter(function(item){
+				console.log("menuItemGroup", angular.uppercase(item.menuCategoryType));	
+				if (angular.uppercase(item.menuCategoryType) == 'MENU-ITEM-GROUP') {
+					return item;
+				}
+			});
+		});
+	$scope.toggleSelection = function($event, itemGroup, item) {
+		console.log(itemGroup);
+		var checkbox = $event.target;
+		var limitSelection = itemGroup.limitSelection;
+		console.log("limitSelecton=", limitSelection);
+		var selected = 0;
+		if ($event.target.checked) {
+			angular.forEach($scope.selectedItems, function(obj, index) {
+				if (item.menuId == obj.menuId && item.sequence == obj.sequence) {//count group selected 
+					selected = selected + 1;
+				}
+			})
+			console.log("current selected how many = " , selected);
+			if (selected < limitSelection) {
+				$event.target.checked = true;
+				$scope.selectedItems.push(item);
+			} else {
+				$event.target.checked = false;
+			}
+		} else {
+			//selectedItems.splice(selectedItems.indexOf(item), 1); // remove item
+			console.log("what is it = ", $scope.selectedItems);
+			$scope.removeSelectedItem(item);
+		}
+	}
+	$scope.ngCheckItem = function (item) {
+		var checked = false;
+		/*angular.forEach($scope.selectedItems, function(obj, index) {
+			if (obj.code == item.code) {
+				checked = true;
+				return false;
+			}
+		})*/
+		$.each($scope.selectedItems, function(i){
+		    if($scope.selectedItems[i].code === item.code) {
+		    	checked = true;
+		    	return false;
+		    }
+		});
+		return checked;
+	}
+	// remove item from selected List
+	$scope.removeSelectedItem = function(item) {
+		angular.forEach($scope.selectedItems, function(obj, index){
+		    // sourceArray is a reference to the original array passed to ng-repeat, 
+		    // rather than the filtered version. 
+		    // 1. compare the target object's hashKey to the current member of the iterable:
+		    if (obj.$$hashKey === hashKey) {
+		      // remove the matching item from the array
+		      $scope.selectedItems.splice(index, 1);
+		      // and exit the loop right away
+		      return;
+		    };
+		  });
+	}
 })
 /*
 app.config(function($routeProvider) {
